@@ -1,17 +1,19 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-exports.authentication = async (req, res, next) => {
+exports.authentication = (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.split(" ")[1];
+    // Header dan tokenni olish (Bearer token shaklida)
+    const token = req.header('Authorization')?.split(" ")[1];
     if (!token) {
-      return res.status(403).json({ message: "Token berilmadi." });
+      return res.status(403).json({ message: "Token berilmadi" });
     }
 
-    jwt.verify(token, "MEN SENGA BIR GAP AYTAMAN, HECH KIM BILMASIN");
+    jwt.verify(token, process.env.SECRET_KEY);
     next();
   } catch (error) {
-    res.status(403).json({
-      message: error.message,
-    });
+    console.error("JWT authentication error:", error.message);
+    res.status(401).json({ message: "Token noto‘g‘ri yoki muddati o‘tgan" });
   }
 };
+
