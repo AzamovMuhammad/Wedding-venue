@@ -10,6 +10,8 @@ import {
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import logo from "../assets/logo/logo.png";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -24,20 +26,37 @@ function classNames(...classes) {
 
 export default function Header() {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState();
 
   const handleLogin = () => {
     navigate("/login");
   };
 
   const handleLogOut = () => {
-    localStorage.removeItem("token")
-    navigate('/login')
-  }
+    localStorage.removeItem("token");
+    handleLogin();
+  };
 
   const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (!token) return;
+
+    axios
+      .get("http://localhost:4001/profile/info", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        setUserInfo(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  if (!userInfo) return <p>Loading...</p>;
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-[#1e2939bf] fixed z-40 w-full">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -80,9 +99,14 @@ export default function Header() {
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {token ? (
-              <Menu as="div" className="relative ml-3">
-                <div>
-                  <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
+              <Menu as="div" className="relative ml-3 ">
+                <div className="flex items-center gap-4">
+                  {userInfo && (
+                    <div>
+                      <h1 className="text-lg text-white cursor-default">{userInfo.firstname}</h1>
+                    </div>
+                  )}
+                  <MenuButton className="relative  cursor-pointer flex items-center gap-4 rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 focus:outline-hidden">
                     <span className="absolute -inset-1.5" />
                     <span className="sr-only">Open user menu</span>
                     <img

@@ -9,11 +9,15 @@ exports.authentication = (req, res, next) => {
       return res.status(403).json({ message: "Token berilmadi" });
     }
 
-    jwt.verify(token, process.env.SECRET_KEY);
+    // Tokenni tekshirish va payloadni olish
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    
+    // Payloadni req.user ga o'rnatish
+    req.user = decoded;
+
     next();
   } catch (error) {
     console.error("JWT authentication error:", error.message);
     res.status(401).json({ message: "Token noto‘g‘ri yoki muddati o‘tgan" });
   }
 };
-

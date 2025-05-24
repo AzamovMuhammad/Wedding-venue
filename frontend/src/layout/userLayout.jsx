@@ -1,11 +1,12 @@
 import React from 'react'
 import Header from '../components/header'
+import Corusel from '../components/corusel'
 
 function UserLayout() {
   return (
     <div>
         <Header />
-        <h1>Salom dunyo</h1>
+        <Corusel/>
     </div>
   )
 }
