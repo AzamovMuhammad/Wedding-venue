@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import logo from "../assets/logo/logo.png"
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -28,13 +29,7 @@ export default function Login() {
     <div className="bg-gray-900 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
         <div className="flex justify-center">
-          <svg
-            className="w-10 h-10 text-indigo-500"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 3a1 1 0 01.993.883L11 4v2a1 1 0 01-1.993.117L9 6V4a1 1 0 011-1zM4.293 6.293a1 1 0 011.414 0L7 7.586 8.293 6.293a1 1 0 011.32-.083l.094.083 3 3a1 1 0 01-1.32 1.497l-.094-.083L9 8.414 7.707 9.707a1 1 0 01-1.32.083l-.094-.083-2-2a1 1 0 010-1.414z" />
-          </svg>
+          <img  className="w-40 h-40 text-indigo-500" src={logo} alt="logo" />
         </div>
         <h2 className="text-center text-2xl font-bold text-white">
           Sign in to your account
@@ -68,7 +63,7 @@ export default function Login() {
           </button>
         </form>
         <p className="text-sm text-center text-white">
-          Not a member? <a href="/register" className="text-indigo-400 hover:underline">Start a 14 day free trial</a>
+          Not a member? <a href="/register" className="text-indigo-400 hover:underline">go to Register.</a>
         </p>
       </div>
     </div>
