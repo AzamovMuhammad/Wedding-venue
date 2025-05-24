@@ -1,18 +1,22 @@
 import axios from "axios";
 import React, { useState } from "react";
 import logo from "../assets/logo/logo.png"
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const response = await axios.post("http://localhost:4001/auth/login", { username, password });
-      alert("Login successful! Token: " + response.data.token);
+      alert("Login successful!");
+      localStorage.setItem("token", response.data.token)
+      navigate('/')
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);

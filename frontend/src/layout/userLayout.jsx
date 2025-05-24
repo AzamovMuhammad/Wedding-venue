@@ -5,7 +5,7 @@ function UserLayout() {
   return (
     <div>
         <Header />
-        
+        <h1>Salom dunyo</h1>
     </div>
   )
 }

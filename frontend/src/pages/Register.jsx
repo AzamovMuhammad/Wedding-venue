@@ -26,7 +26,7 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("/http://localhost:4001/auth/register", formData);
+      const res = await axios.post("http://localhost:4001/auth/register", formData);
       alert(res.data.message);
       setFormData({
         firstname: "",
@@ -36,6 +36,7 @@ export default function Register() {
         role: "user",
         phone_number: "",
       });
+
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -105,23 +106,6 @@ export default function Register() {
               required
               disabled={loading}
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-white">Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-              disabled={loading}
-            >
-              {roles.map((role) => (
-                <option key={role} value={role}>
-                  {role.charAt(0).toUpperCase() + role.slice(1)}
-                </option>
-              ))}
-            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-white">
