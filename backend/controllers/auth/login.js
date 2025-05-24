@@ -2,7 +2,7 @@ const pool = require("../../config/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "super_secret_key"; // Agar .env ishlatsangiz, process.env.JWT_SECRET bo'ladi
+const JWT_SECRET = "super_secret_key";
 
 async function login(req, res) {
   try {
