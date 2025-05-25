@@ -5,12 +5,13 @@ const storage = multer.diskStorage({
     cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
   },
 });
 
 const upload = multer({ storage });
 
-const uploadMiddleware = upload.array("files", 5); 
+const uploadFiles = upload.array("images", 5); // 'images' frontenddagi input nomi
 
-module.exports = uploadMiddleware;
+module.exports = uploadFiles; // to‘g‘ridan-to‘g‘ri middleware sifatida eksport

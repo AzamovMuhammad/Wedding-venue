@@ -4,6 +4,7 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import UserLayout from "./layout/userLayout";
 import CreateVenue from "./pages/CreateVenue";
+import UploadVenueImages from "./pages/UploadVenueImages";
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
 
 
           <Route path="/createVanue" element={<CreateVenue/>} />
+          <Route path="/uploadVanueImg" element={<UploadVenueImages/>} />
+
 
           <Route path="/" element={<UserLayout/>} />
 

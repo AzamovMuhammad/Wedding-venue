@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useVenueStore from "../zustand/store";
 
 function CreateVenue() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function CreateVenue() {
   const [error, setError] = useState("");
 
   const token = localStorage.getItem("token");
+
+  const setVenueId = useVenueStore((state) => state.setVenueId);
 
   useEffect(() => {
     async function fetchDistricts() {
@@ -58,6 +61,9 @@ function CreateVenue() {
           },
         }
       );
+
+      const venueID = res.data.venue.id;
+      setVenueId(venueID);
 
       setMessage("To’yxona muvaffaqiyatli qo‘shildi!");
       setFormData({
@@ -154,13 +160,16 @@ function CreateVenue() {
         <div className="flex gap-2">
           <button
             onClick={() => {
-                navigate("/");
+              navigate("/");
             }}
             className="w-full bg-white border border-pink-700 hover:bg-pink-700 text-pink-700 hover:text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer">
             Bekor qilish
           </button>
           <button
             type="submit"
+            onClick={() => {
+              navigate("/uploadVanueImg");
+            }}
             className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer">
             Qo‘shish
           </button>
