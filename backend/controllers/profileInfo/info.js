@@ -5,7 +5,7 @@ const getProfile = async (req, res) => {
     const userId = req.user.id;
 
     const result = await pool.query(
-      'SELECT firstname, lastname, username FROM users WHERE id = $1',
+      'SELECT * FROM users WHERE id = $1',
       [userId]
     );
 

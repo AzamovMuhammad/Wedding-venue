@@ -3,6 +3,7 @@ import Header from "./components/header";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import UserLayout from "./layout/userLayout";
+import CreateVenue from "./pages/CreateVenue";
 
 
 function App() {
@@ -12,6 +13,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
+
+
+          <Route path="/createVanue" element={<CreateVenue/>} />
 
           <Route path="/" element={<UserLayout/>} />
 

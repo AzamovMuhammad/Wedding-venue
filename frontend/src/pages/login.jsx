@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import logo from "../assets/logo/logo.png"
+import logo from "../assets/logo/logo.png";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -13,15 +13,17 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:4001/auth/login", { username, password });
+      const response = await axios.post("http://localhost:4001/auth/login", {
+        username,
+        password,
+      });
       alert("Login successful!");
-      localStorage.setItem("token", response.data.token)
-      navigate('/')
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
-      }
-      else {
+      } else {
         alert("Server bilan bog‘lanishda xatolik yuz berdi");
       }
     } finally {
@@ -30,44 +32,54 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
+    <div className="bg-pink-50 min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-xl border border-pink-100">
         <div className="flex justify-center">
-          <img  className="w-40 h-40 text-indigo-500" src={logo} alt="logo" />
+          <img
+            className="w-54 h-48"
+            src={logo}
+            alt="logo"
+          />
         </div>
-        <h2 className="text-center text-2xl font-bold text-white">
-          Sign in to your account
-        </h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-white">Username</label>
+            <label className="block text-sm font-medium text-pink-700">
+              Username
+            </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full mt-1 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full mt-1 px-4 py-2 bg-pink-50 border border-pink-200 text-pink-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+              placeholder="e.g. eshmat_boy"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-white">Password</label>
+            <label className="block text-sm font-medium text-pink-700">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full mt-1 px-4 py-2 bg-pink-50 border border-pink-200 text-pink-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300"
+              placeholder="••••••••"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition-colors duration-300 cursor-pointer"
-          >
+            className="w-full py-2 px-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg transition duration-300">
             Sign in
           </button>
         </form>
-        <p className="text-sm text-center text-white">
-          Not a member? <a href="/register" className="text-indigo-400 hover:underline">go to Register.</a>
+
+        <p className="text-sm text-center text-pink-600">
+          Not a member?
+          <a href="/register" className="ml-1 text-pink-500 hover:underline">
+            Register
+          </a>
         </p>
       </div>
     </div>
