@@ -296,14 +296,24 @@ exports.getVenueById = async (req, res) => {
     const { id } = req.params;
 
     const venueResult = await pool.query(
-      `SELECT v.*, d.name as district_name, u.firstname as owner_firstname, u.lastname as owner_lastname,
-              ARRAY_AGG(vi.image_url) FILTER (WHERE vi.image_url IS NOT NULL) as images
-       FROM venues v
-       JOIN districts d ON v.district_id = d.id
-       LEFT JOIN users u ON v.owner_id = u.id
-       LEFT JOIN venue_images vi ON vi.venue_id = v.id
-       WHERE v.id = $1
-       GROUP BY v.id`,
+      `SELECT
+    v.*,
+    d.name AS district_name,
+    u.firstname AS owner_firstname,
+    u.lastname AS owner_lastname,
+    ARRAY_AGG(vi.image_url) FILTER (WHERE vi.image_url IS NOT NULL) AS images
+FROM
+    venues v
+JOIN
+    districts d ON v.district_id = d.id
+LEFT JOIN
+    users u ON v.owner_id = u.id
+LEFT JOIN
+    venue_images vi ON vi.venue_id = v.id
+WHERE
+    v.id = $1
+GROUP BY
+    v.id, d.name, u.firstname, u.lastname`,
       [id]
     );
 
@@ -319,4 +329,3 @@ exports.getVenueById = async (req, res) => {
     res.status(500).json({ message: "Server xatosi" });
   }
 };
-
