@@ -3,28 +3,36 @@ const router = express.Router();
 
 const {
   createVenue,
-  getAllVenues,
-  getVenueById,
+  assignOwner,
+  approveVenue,
   updateVenue,
   deleteVenue,
+  getAllVenues,
+  getVenueById,
 } = require("../controllers/Venue/venueController");
 
 const { authentication } = require("../middleware/authentication");
 const { checkRole } = require("../middleware/checkRole");
 
-// CREATE — faqat admin va owner
+// Yangi venue qo‘shish (admin va owner)
 router.post("/", authentication, checkRole("admin", "owner"), createVenue);
 
-// READ all — hamma uchun, lekin faqat tasdiqlanganlar foydalanuvchi uchun
-router.get("/", authentication, getAllVenues);
+// Owner biriktirish (faqat admin)
+router.patch("/:id/assign-owner", authentication, checkRole("admin"), assignOwner);
 
-// READ one
-router.get("/:id", authentication, getVenueById);
+// Venue tasdiqlash (faqat admin)
+router.patch("/:id/approve", authentication, checkRole("admin"), approveVenue);
 
-// UPDATE — faqat admin va owner
+// Venue ma’lumotlarini o‘zgartirish (admin va owner)
 router.put("/:id", authentication, checkRole("admin", "owner"), updateVenue);
 
-// DELETE — faqat admin
+// Venue o‘chirish (faqat admin)
 router.delete("/:id", authentication, checkRole("admin"), deleteVenue);
+
+// Bitta venue ni olish (hamma uchun, lekin authentication talab qilinadi)
+router.get("/:id", authentication, getVenueById);
+
+// Venue lar ro‘yxatini olish, filterlash, tartiblash (hamma uchun)
+router.get("/", authentication, getAllVenues);
 
 module.exports = router;

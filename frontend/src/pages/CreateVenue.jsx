@@ -19,7 +19,6 @@ function CreateVenue() {
   const [error, setError] = useState("");
 
   const token = localStorage.getItem("token");
-
   const setVenueId = useVenueStore((state) => state.setVenueId);
 
   useEffect(() => {
@@ -31,7 +30,6 @@ function CreateVenue() {
         console.error("Districts olishda xatolik:", err);
       }
     }
-
     fetchDistricts();
   }, []);
 
@@ -74,6 +72,7 @@ function CreateVenue() {
         price_per_seat: "",
         phone_number: "",
       });
+
     } catch (err) {
       setError(err.response?.data?.message || "Xatolik yuz berdi");
     }
@@ -159,18 +158,19 @@ function CreateVenue() {
 
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              navigate("/");
-            }}
-            className="w-full bg-white border border-pink-700 hover:bg-pink-700 text-pink-700 hover:text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer">
+            type="button"
+            onClick={() => navigate("/")}
+            className="w-full bg-white border border-pink-700 hover:bg-pink-700 text-pink-700 hover:text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer"
+          >
             Bekor qilish
           </button>
           <button
             type="submit"
             onClick={() => {
-              navigate("/uploadVanueImg");
+              navigate("/uploadImg");
             }}
-            className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer">
+            className="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer"
+          >
             Qo‘shish
           </button>
         </div>

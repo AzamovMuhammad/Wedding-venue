@@ -58,8 +58,6 @@ export default function Header() {
         console.error(err);
       });
   }, []);
-
-  if (!userInfo) return <p>Loading...</p>;
   console.log(userInfo);
 
   return (

@@ -1,101 +1,9 @@
 const pool = require("../../config/db");
 
-// CREATE
+// CREATE VENUE
 exports.createVenue = async (req, res) => {
   try {
-    const {
-      name,
-      district_id,
-      address,
-      capacity,
-      price_per_seat,
-      phone_number,
-      status, // owner uchun default "tasdiqlanmagan" bo‘lishi kerak, admin kiritsa "tasdiqlangan"
-    } = req.body;
-
-    if (!name || !district_id || !address || !capacity || !price_per_seat) {
-      return res.status(400).json({ message: "Kerakli maydonlar to‘ldirilmagan" });
-    }
-
-    let venueStatus = status;
-    // Agar owner bo‘lsa, statusni majburan "tasdiqlanmagan" qilamiz
-    if (req.user.role === "owner") {
-      venueStatus = "tasdiqlanmagan";
-    } else if (!venueStatus) {
-      venueStatus = "pending"; // admin uchun default holat
-    }
-
-    const result = await pool.query(
-      `INSERT INTO venues 
-      (name, district_id, address, capacity, price_per_seat, phone_number, status, owner_id)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
-      [name, district_id, address, capacity, price_per_seat, phone_number || null, venueStatus, req.user.id]
-    );
-
-    res.status(201).json({ venue: result.rows[0] });
-  } catch (error) {
-    console.error("CREATE venue error:", error);
-    res.status(500).json({ message: "Server xatosi" });
-  }
-};
-
-// READ ALL
-exports.getAllVenues = async (req, res) => {
-  try {
-    const { role } = req.user;
-
-    let query = `SELECT v.*, d.name as district_name, u.firstname as owner_firstname, u.lastname as owner_lastname
-                 FROM venues v
-                 JOIN districts d ON v.district_id = d.id
-                 JOIN users u ON v.owner_id = u.id`;
-
-    if (role === "user") {
-      // Oddiy foydalanuvchilar faqat tasdiqlangan to’yxonalarni ko‘radi
-      query += ` WHERE v.status = 'tasdiqlangan'`;
-    }
-
-    const result = await pool.query(query);
-
-    res.json({ venues: result.rows });
-  } catch (error) {
-    console.error("GET all venues error:", error);
-    res.status(500).json({ message: "Server xatosi" });
-  }
-};
-
-// READ ONE
-exports.getVenueById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    const venueResult = await pool.query(
-      `SELECT v.*, d.name as district_name, u.firstname as owner_firstname, u.lastname as owner_lastname
-       FROM venues v
-       JOIN districts d ON v.district_id = d.id
-       JOIN users u ON v.owner_id = u.id
-       WHERE v.id = $1`,
-      [id]
-    );
-
-    if (venueResult.rows.length === 0) {
-      return res.status(404).json({ message: "To’yxona topilmadi" });
-    }
-
-    const venue = venueResult.rows[0];
-
-    // Bu yerga bron (booking) kalendarini qo‘shish mumkin (keyinchalik)
-
-    res.json({ venue });
-  } catch (error) {
-    console.error("GET venue by id error:", error);
-    res.status(500).json({ message: "Server xatosi" });
-  }
-};
-
-// UPDATE
-exports.updateVenue = async (req, res) => {
-  try {
-    const { id } = req.params;
+    const user = req.user;
     const {
       name,
       district_id,
@@ -106,61 +14,309 @@ exports.updateVenue = async (req, res) => {
       status,
     } = req.body;
 
-    // Faqat admin statusni o‘zgartira oladi
-    if (status && req.user.role !== "admin") {
-      return res.status(403).json({ message: "Faqat admin statusni o‘zgartira oladi" });
+    if (!name || !district_id || !address || !capacity || !price_per_seat) {
+      return res
+        .status(400)
+        .json({ message: "Kerakli maydonlar to‘ldirilmagan" });
     }
 
-    // To'yxonani tekshirish (borligini)
-    const venueCheck = await pool.query("SELECT * FROM venues WHERE id = $1", [id]);
-    if (venueCheck.rows.length === 0) {
-      return res.status(404).json({ message: "To’yxona topilmadi" });
+    let venueStatus;
+    let ownerId;
+
+    if (user.role === "admin") {
+      ownerId = null;
+      venueStatus = status || "pending";
+    } else if (user.role === "owner") {
+      ownerId = user.id;
+      venueStatus = "tasdiqlanmagan";
+    } else {
+      return res
+        .status(403)
+        .json({ message: "Faqat admin yoki owner venue qo‘shishi mumkin" });
     }
 
-    // Owner faqat o‘zining to’yxonasini tahrirlashi kerak
-    if (req.user.role === "owner" && venueCheck.rows[0].owner_id !== req.user.id) {
-      return res.status(403).json({ message: "Siz faqat o‘z to’yxonangizni o‘zgartira olasiz" });
-    }
+    const query = `
+      INSERT INTO venues
+        (name, district_id, address, capacity, price_per_seat, phone_number, status, owner_id)
+      VALUES
+        ($1,$2,$3,$4,$5,$6,$7,$8)
+      RETURNING *`;
 
-    const updatedVenue = await pool.query(
-      `UPDATE venues SET
-       name = COALESCE($1, name),
-       district_id = COALESCE($2, district_id),
-       address = COALESCE($3, address),
-       capacity = COALESCE($4, capacity),
-       price_per_seat = COALESCE($5, price_per_seat),
-       phone_number = COALESCE($6, phone_number),
-       status = COALESCE($7, status),
-       updated_at = CURRENT_TIMESTAMP
-       WHERE id = $8 RETURNING *`,
-      [name, district_id, address, capacity, price_per_seat, phone_number, status, id]
-    );
+    const values = [
+      name,
+      district_id,
+      address,
+      capacity,
+      price_per_seat,
+      phone_number || null,
+      venueStatus,
+      ownerId,
+    ];
 
-    res.json({ venue: updatedVenue.rows[0] });
+    const result = await pool.query(query, values);
+
+    res.status(201).json({ venue: result.rows[0] });
   } catch (error) {
-    console.error("UPDATE venue error:", error);
+    console.error("CREATE venue error:", error);
     res.status(500).json({ message: "Server xatosi" });
   }
 };
 
-// DELETE
+// ASSIGN OWNER (faqat admin)
+exports.assignOwner = async (req, res) => {
+  try {
+    const user = req.user;
+    if (user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Faqat admin owner biriktira oladi" });
+    }
+
+    const venueId = req.params.id;
+    const { owner_id } = req.body;
+
+    const ownerResult = await pool.query(
+      "SELECT firstname, lastname, phone_number FROM users WHERE id = $1 AND role = 'owner'",
+      [owner_id]
+    );
+    if (ownerResult.rows.length === 0) {
+      return res.status(404).json({ message: "Owner topilmadi" });
+    }
+
+    const owner = ownerResult.rows[0];
+
+    const updateResult = await pool.query(
+      `UPDATE venues SET owner_id = $1, phone_number = $2 WHERE id = $3 RETURNING *`,
+      [owner_id, owner.phone_number, venueId]
+    );
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({ message: "To’yxona topilmadi" });
+    }
+
+    res.json({ venue: updateResult.rows[0] });
+  } catch (error) {
+    console.error("Assign owner error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+
+// APPROVE VENUE STATUS (faqat admin)
+exports.approveVenue = async (req, res) => {
+  try {
+    const user = req.user;
+    if (user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Faqat admin tasdiqlashi mumkin" });
+    }
+
+    const venueId = req.params.id;
+    const { status } = req.body;
+
+    if (!["tasdiqlangan", "tasdiqlanmagan", "pending"].includes(status)) {
+      return res.status(400).json({ message: "Noto‘g‘ri status" });
+    }
+
+    const result = await pool.query(
+      `UPDATE venues SET status = $1 WHERE id = $2 RETURNING *`,
+      [status, venueId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "To’yxona topilmadi" });
+    }
+
+    res.json({ venue: result.rows[0] });
+  } catch (error) {
+    console.error("Approve venue error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+
+// UPDATE VENUE
+exports.updateVenue = async (req, res) => {
+  try {
+    const user = req.user;
+    const venueId = req.params.id;
+    const {
+      name,
+      district_id,
+      address,
+      capacity,
+      price_per_seat,
+      phone_number,
+      status,
+    } = req.body;
+
+    // Faqat admin statusni o‘zgartirishi mumkin
+    if (status && user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Faqat admin statusni o‘zgartirishi mumkin" });
+    }
+
+    const venueResult = await pool.query("SELECT * FROM venues WHERE id = $1", [
+      venueId,
+    ]);
+    if (venueResult.rows.length === 0) {
+      return res.status(404).json({ message: "To’yxona topilmadi" });
+    }
+
+    const venue = venueResult.rows[0];
+
+    // Owner faqat o‘zining to’yxonasi uchun o‘zgartirish kiritishi mumkin
+    if (user.role === "owner" && venue.owner_id !== user.id) {
+      return res
+        .status(403)
+        .json({ message: "Siz faqat o‘z to’yxonangizni o‘zgartira olasiz" });
+    }
+
+    const updateResult = await pool.query(
+      `UPDATE venues SET
+        name = COALESCE($1, name),
+        district_id = COALESCE($2, district_id),
+        address = COALESCE($3, address),
+        capacity = COALESCE($4, capacity),
+        price_per_seat = COALESCE($5, price_per_seat),
+        phone_number = COALESCE($6, phone_number),
+        status = COALESCE($7, status),
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = $8 RETURNING *`,
+      [
+        name,
+        district_id,
+        address,
+        capacity,
+        price_per_seat,
+        phone_number,
+        status,
+        venueId,
+      ]
+    );
+
+    res.json({ venue: updateResult.rows[0] });
+  } catch (error) {
+    console.error("Update venue error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+
+// DELETE VENUE
 exports.deleteVenue = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    if (req.user.role !== "admin") {
+    const user = req.user;
+    if (user.role !== "admin") {
       return res.status(403).json({ message: "Faqat admin o‘chirishi mumkin" });
     }
 
-    const delResult = await pool.query("DELETE FROM venues WHERE id = $1 RETURNING *", [id]);
+    const venueId = req.params.id;
+    const deleteResult = await pool.query(
+      "DELETE FROM venues WHERE id = $1 RETURNING *",
+      [venueId]
+    );
 
-    if (delResult.rows.length === 0) {
+    if (deleteResult.rows.length === 0) {
       return res.status(404).json({ message: "To’yxona topilmadi" });
     }
 
     res.json({ message: "To’yxona muvaffaqiyatli o‘chirildi" });
   } catch (error) {
-    console.error("DELETE venue error:", error);
+    console.error("Delete venue error:", error);
     res.status(500).json({ message: "Server xatosi" });
   }
 };
+
+// GET ALL VENUES (filter, sort, rolga qarab)
+exports.getAllVenues = async (req, res) => {
+  try {
+    const user = req.user;
+    const { status, sortBy, sortOrder, district_id } = req.query;
+
+    let baseQuery = `
+ SELECT
+    v.*,
+    d.name AS district_name,
+    u.firstname AS owner_firstname,
+    u.lastname AS owner_lastname,
+    ARRAY_AGG(vi.image_url) AS images
+  FROM venues v
+  JOIN districts d ON v.district_id = d.id
+  LEFT JOIN users u ON v.owner_id = u.id
+  LEFT JOIN venue_images vi ON vi.venue_id = v.id
+  GROUP BY v.id, d.name, u.firstname, u.lastname
+    `;
+
+    const conditions = [];
+    const values = [];
+    let idx = 1;
+
+    if (user.role === "user") {
+      conditions.push(`v.status = 'tasdiqlangan'`);
+    } else if (status) {
+      conditions.push(`v.status = $${idx++}`);
+      values.push(status);
+    }
+
+    if (district_id) {
+      conditions.push(`v.district_id = $${idx++}`);
+      values.push(district_id);
+    }
+
+    if (conditions.length > 0) {
+      baseQuery += " WHERE " + conditions.join(" AND ");
+    }
+
+    const validSortFields = [
+      "price_per_seat",
+      "capacity",
+      "district_name",
+      "status",
+    ];
+    let orderClause = "";
+    if (sortBy && validSortFields.includes(sortBy)) {
+      const order =
+        sortOrder && sortOrder.toLowerCase() === "desc" ? "DESC" : "ASC";
+      orderClause = ` ORDER BY ${sortBy} ${order}`;
+    }
+
+    const finalQuery = baseQuery + orderClause;
+
+    const result = await pool.query(finalQuery, values);
+
+    res.json({ venues: result.rows });
+  } catch (error) {
+    console.error("Get all venues error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+
+exports.getVenueById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const venueResult = await pool.query(
+      `SELECT v.*, d.name as district_name, u.firstname as owner_firstname, u.lastname as owner_lastname,
+              ARRAY_AGG(vi.image_url) FILTER (WHERE vi.image_url IS NOT NULL) as images
+       FROM venues v
+       JOIN districts d ON v.district_id = d.id
+       LEFT JOIN users u ON v.owner_id = u.id
+       LEFT JOIN venue_images vi ON vi.venue_id = v.id
+       WHERE v.id = $1
+       GROUP BY v.id`,
+      [id]
+    );
+
+    if (venueResult.rows.length === 0) {
+      return res.status(404).json({ message: "To’yxona topilmadi" });
+    }
+
+    const venue = venueResult.rows[0];
+
+    res.json({ venue });
+  } catch (error) {
+    console.error("GET venue by id error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+

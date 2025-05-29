@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {useNavigate } from "react-router-dom";
 
 function VenuesCards() {
   const [venues, setVenues] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate  = useNavigate()
 
   useEffect(() => {
     async function fetchVenues() {
@@ -27,6 +29,8 @@ function VenuesCards() {
     fetchVenues();
   }, []);
 
+  console.log(venues);
+  
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -43,22 +47,16 @@ function VenuesCards() {
             key={venue.id}
             className="bg-white border border-pink-100 rounded-2xl shadow-md p-6 hover:shadow-xl transition duration-300"
           >
-            
+            <img src={`http://localhost:4001${venue.images[0]}`} className="w-full" alt="" />
             <h3 className="text-xl font-semibold text-pink-600 mb-2">{venue.name}</h3>
             <p className="text-pink-800">
               <strong>Rayon:</strong> {venue.district_name}
-            </p>
-            <p className="text-pink-800">
-              <strong>Egasi:</strong> {venue.owner_firstname} {venue.owner_lastname}
             </p>
             <p className="text-pink-800">
               <strong>Sig‘im:</strong> {venue.capacity} o‘rindiq
             </p>
             <p className="text-pink-800">
               <strong>Narx:</strong> {venue.price_per_seat} so‘m (1 o‘rindiq)
-            </p>
-            <p className="text-pink-800">
-              <strong>Telefon:</strong> {venue.phone_number}
             </p>
             <p className="text-pink-800">
               <strong>Status:</strong>{" "}
@@ -73,7 +71,7 @@ function VenuesCards() {
               </span>
             </p>
   
-            <button className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+            <button onClick={() => { navigate(`/venueDetail/${venue.id}`); }} className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
               To‘yxonani ko‘rish
             </button>
           </div>

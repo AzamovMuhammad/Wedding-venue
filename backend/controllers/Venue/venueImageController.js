@@ -25,7 +25,7 @@ exports.uploadVenueImages = async (req, res) => {
     // Har bir fayl uchun baza yozish
     const insertPromises = req.files.map((file) => {
       // Fayl nomi yoki yo‘lini saqlaymiz
-      const imageUrl = `/uploads/venues/${file.filename}`;
+      const imageUrl = `/uploads/${file.filename}`;
       return pool.query(
         "INSERT INTO venue_images (venue_id, image_url) VALUES ($1, $2)",
         [venueId, imageUrl]
