@@ -4,8 +4,7 @@ import Login from "./pages/login";
 import Register from "./pages/Register";
 import UserLayout from "./layout/userLayout";
 import CreateVenue from "./pages/CreateVenue";
-import UploadImg from "./pages/UploadVenueImages";
-import VenueDetails from "./pages/VenueDetails";
+import AdminRoutes from "./routes/AdminRoutes";
 
 
 function App() {
@@ -18,12 +17,11 @@ function App() {
 
 
           <Route path="/createVanue" element={<CreateVenue/>} />
-          <Route path="/uploadImg" element={<UploadImg/>} />
-          <Route path="/venueDetail/:id" element={<VenueDetails/>} />
 
 
           <Route path="/" element={<UserLayout/>} />
-
+          <Route path="/admin/*" element={<AdminRoutes/>} />
+          
           
 
         </Routes>

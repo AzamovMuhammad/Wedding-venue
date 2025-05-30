@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/logo/logo.png";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,33 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // Tokenni va user rolini saqlash uchun
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  // Token o‘zgarganda user ma’lumotlarini olish va yo‘naltirish
+  useEffect(() => {
+    if (!token) return;
+
+    axios
+      .get("http://localhost:4001/profile/info", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const role = res.data.role;
+        if (role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        localStorage.removeItem("token");
+        setToken(null);
+      });
+  }, [token, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -19,7 +46,7 @@ export default function Login() {
       });
       alert("Login successful!");
       localStorage.setItem("token", response.data.token);
-      navigate("/");
+      setToken(response.data.token); // useEffect ishga tushishi uchun
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);
@@ -70,8 +97,10 @@ export default function Login() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg transition duration-300">
-            Sign in
+            disabled={loading}
+            className="w-full py-2 px-4 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg transition duration-300"
+          >
+            {loading ? "Kuting..." : "Sign in"}
           </button>
         </form>
 
