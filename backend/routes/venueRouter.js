@@ -8,7 +8,8 @@ const {
   updateVenue,
   deleteVenue,
   getAllVenues,
-  getVenueById, // <--- uploadVenueImages controllerini import qiling
+  getVenueById,
+  getPendingVenues, // <--- uploadVenueImages controllerini import qiling
 } = require("../controllers/Venue/venueController"); // Controller faylingizga to'g'ri yo'lni ko'rsating
 
 const {uploadVenueImages} = require("../controllers/Venue/venueImageController")
@@ -25,6 +26,8 @@ router.patch("/:id/assign-owner", authentication, checkRole("admin"), assignOwne
 
 // Venue tasdiqlash (faqat admin)
 router.patch("/:id/approve", authentication, checkRole("admin"), approveVenue);
+
+router.get("/pending", authentication, checkRole("admin"), getPendingVenues);
 
 // Venue ma’lumotlarini o‘zgartirish (admin va owner)
 router.put("/:id", authentication, checkRole("admin", "owner"), updateVenue);

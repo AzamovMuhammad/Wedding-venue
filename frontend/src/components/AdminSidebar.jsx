@@ -12,7 +12,6 @@ function AdminSidebar() {
     { name: "addVenue", path: "/admin/addVenue" },
     { name: "getVenueOwners", path: "/admin/getVenueOwners" },
     { name: "getBrons", path: "/admin/getBrons" },
-    { name: "getVenues", path: "/admin/getVenues" },
     { name: "confirm", path: "/admin/confirm" },
   ];
 

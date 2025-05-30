@@ -1,18 +1,16 @@
 const pool = require("../../config/db");
 
-// CREATE VENUE pool ni import qilganingizga ishonch hosil qiling
-
 exports.createVenue = async (req, res) => {
   try {
-    const loggedInUser = req.user; // Tizimga kirgan foydalanuvchi (token orqali)
+    const loggedInUser = req.user;
     const {
       name,
       district_id,
       address,
       capacity,
       price_per_seat,
-      status, // Frontenddan kelayotgan status
-      owner_id, // <<<<--- Frontenddan kelayotgan owner_id ni o'qish
+      status,
+      owner_id,
     } = req.body;
 
     if (!name || !district_id || !address || !capacity || !price_per_seat) {
@@ -25,17 +23,11 @@ exports.createVenue = async (req, res) => {
     let finalVenueStatus;
 
     if (loggedInUser.role === "admin") {
-      // Agar admin venue qo'shsa:
-      // Frontenddan yuborilgan owner_id ni ishlatamiz.
-      // Agar frontend owner_id yubormasa, null bo'lishi mumkin (yoki xatolik qaytarish kerak).
-      // Sizning holatingizda frontend owner_id ni yuboradi.
-      finalOwnerId = owner_id || null; // Agar owner_id kelmasa null, aks holda kelgan qiymat
-      finalVenueStatus = status || "pending"; // Admin statusni o'rnatishi mumkin, standart "pending"
+      finalOwnerId = owner_id || null; 
+      finalVenueStatus = status || "pending"; 
     } else if (loggedInUser.role === "owner") {
-      // Agar owner o'zi uchun venue qo'shsa:
       finalOwnerId = loggedInUser.id;
-      finalVenueStatus = "tasdiqlanmagan"; // Ownerlar faqat "tasdiqlanmagan" statusida qo'sha oladi
-                                         // (Frontend "tasdiqlangan" yuborsa ham)
+      finalVenueStatus = "tasdiqlanmagan";
     } else {
       return res
         .status(403)
@@ -56,7 +48,7 @@ exports.createVenue = async (req, res) => {
       capacity,
       price_per_seat,
       finalVenueStatus,
-      finalOwnerId, // To'g'rilangan ownerId ni ishlatish
+      finalOwnerId,
     ];
 
     const result = await pool.query(query, values);
@@ -64,8 +56,7 @@ exports.createVenue = async (req, res) => {
     res.status(201).json({ venue: result.rows[0] });
   } catch (error) {
     console.error("CREATE venue error:", error);
-    // Agar owner_id mavjud bo'lmagan userga ishora qilsa (foreign key xatoligi)
-    if (error.code === '23503') { // PostgreSQL da foreign key violation kodi
+    if (error.code === '23503') {
         return res.status(400).json({ message: "Ko'rsatilgan egasi (owner_id) mavjud emas." });
     }
     res.status(500).json({ message: "Server xatosi" });
@@ -140,6 +131,30 @@ exports.approveVenue = async (req, res) => {
     res.json({ venue: result.rows[0] });
   } catch (error) {
     console.error("Approve venue error:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
+};
+
+exports.getPendingVenues = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "admin") {
+      return res.status(403).json({ message: "Faqat admin ko‘rishi mumkin" });
+    }
+
+    const result = await pool.query(
+      `SELECT v.*, d.name as district_name, u.firstname as owner_firstname, u.lastname as owner_lastname
+       FROM venues v
+       JOIN districts d ON v.district_id = d.id
+       LEFT JOIN users u ON v.owner_id = u.id
+       WHERE v.status IN ('pending', 'tasdiqlanmagan')
+       ORDER BY v.created_at DESC`
+    );
+
+    res.json({ venues: result.rows });
+  } catch (error) {
+    console.error("Get pending venues error:", error);
     res.status(500).json({ message: "Server xatosi" });
   }
 };
@@ -259,58 +274,49 @@ exports.getAllVenues = async (req, res) => {
       LEFT JOIN users u ON v.owner_id = u.id
       LEFT JOIN venue_images vi ON vi.venue_id = v.id
     `;
-    let whereClause = " WHERE 1=1"; // Har doim true bo'lgan shart, keyingi shartlarni "AND" bilan oson qo'shish uchun
+    let whereClause = " WHERE 1=1";
     const values = [];
     let idx = 1;
 
-    // Foydalanuvchi roli bo'yicha status sharti
     if (user.role === "user") {
       whereClause += ` AND v.status = 'tasdiqlangan'`;
-    } else if (status) { // Agar admin/owner va status parametri kelsa
+    } else if (status) { 
       whereClause += ` AND v.status = $${idx++}`;
       values.push(status);
     }
 
-    // Rayon bo'yicha filter
     if (district_id) {
       whereClause += ` AND v.district_id = $${idx++}`;
       values.push(district_id);
     }
 
-    // GROUP BY bandi
     let groupByClause = ` GROUP BY v.id, d.name, u.firstname, u.lastname`;
 
-    // Tartiblash (ORDER BY) bandi
     const validSortFields = [
       "price_per_seat",
       "capacity",
-      "district_name", // Bu d.name bo'lishi kerak, lekin GROUP BY da d.name borligi uchun OK
+      "district_name",
       "status",
-      "name" // v.name bo'yicha tartiblash
+      "name"
     ];
     let orderClause = "";
     if (sortBy && validSortFields.includes(sortBy)) {
       const order =
         sortOrder && sortOrder.toLowerCase() === "desc" ? "DESC" : "ASC";
-      // Agar sortBy "district_name" bo'lsa, d.name bo'yicha tartiblash kerak
       const sortField = sortBy === "district_name" ? "d.name" : `v.${sortBy}`;
       orderClause = ` ORDER BY ${sortField} ${order}`;
     } else {
-      orderClause = ` ORDER BY v.created_at DESC`; // Standart tartiblash (masalan, yaratilgan vaqti bo'yicha)
+      orderClause = ` ORDER BY v.created_at DESC`;
     }
 
-    // Yakuniy so'rovni yig'ish
     const finalQuery = selectClause + fromClause + whereClause + groupByClause + orderClause;
-
-    console.log("Yuborilayotgan SQL so'rovi:", finalQuery); // SO'ROVNI KONSOLGA CHIQARING
-    console.log("Parametrlar:", values);
 
     const result = await pool.query(finalQuery, values);
 
     res.json({ venues: result.rows });
   } catch (error) {
     console.error("Get all venues error:", error);
-    res.status(500).json({ message: "Server xatosi", errorDetails: error.message }); // Xatolik haqida ko'proq ma'lumot
+    res.status(500).json({ message: "Server xatosi", errorDetails: error.message });
   }
 };
 
