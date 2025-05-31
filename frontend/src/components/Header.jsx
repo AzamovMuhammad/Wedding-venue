@@ -51,7 +51,13 @@ export default function Header() {
             ...prev,
             { name: "Team", href: "#", current: false },
             { name: "Add Venue", href: "/create", current: false },
+            { name: "Bookong", href: "/viewBookings", current: false },
           ]);
+        }else if (res.data.role === "user"){
+          setNavigation((prev) => [
+            ...prev,
+            {name:"Booking", href: "/viewBookings", current: false}
+          ])
         }
       })
       .catch((err) => {

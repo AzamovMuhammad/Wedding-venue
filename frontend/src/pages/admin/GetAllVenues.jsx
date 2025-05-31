@@ -232,7 +232,7 @@ function GetAllVenues() {
 
       {displayedVenues.length > 0 && (
         <div className="overflow-x-auto shadow-md rounded-lg">
-          <table className="w-full table-auto border-collapse border">
+          <table className="w-full table-auto border-collapse ">
             <thead className="bg-pink-600 text-white">
               <tr>
                 <th className="border-b border-pink-700 px-3 py-3 text-left text-sm font-semibold">Rasm</th>
@@ -261,8 +261,8 @@ function GetAllVenues() {
               {displayedVenues.map((venue) => {
                 const firstImage = venue.images && venue.images.length > 0 ? venue.images[0] : null;
                 return (
-                  <tr key={venue.id} onClick={() => navigate(`details/${venue.id}`)} className="hover:bg-pink-50 transition-colors duration-150">
-                    <td className="border-b px-3 py-3 text-center">
+                  <tr key={venue.id} className="hover:bg-pink-50 transition-colors duration-150">
+                    <td className=" px-3 py-3 text-center">
                       {firstImage ? (
                         <>
                           <img
@@ -282,13 +282,13 @@ function GetAllVenues() {
                         <span className="text-gray-400 text-xs">Rasm yo‘q</span>
                       )}
                     </td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-700 font-medium">{venue.name}</td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600">{venue.district_name}</td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{venue.address}</td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600 text-center">{venue.capacity}</td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600 hidden lg:table-cell text-right">{venue.price_per_seat}</td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{venue.phone_number || "Noma’lum"}</td>
-                    <td className="border-b px-4 py-3 text-sm">
+                    <td onClick={() => navigate(`details/${venue.id}`)} className=" cursor-pointer px-4 py-3 text-sm text-gray-700 font-medium">{venue.name}</td>
+                    <td className=" px-4 py-3 text-sm text-gray-600">{venue.district_name}</td>
+                    <td className=" px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{venue.address}</td>
+                    <td className=" px-4 py-3 text-sm text-gray-600 text-center">{venue.capacity}</td>
+                    <td className=" px-4 py-3 text-sm text-gray-600 hidden lg:table-cell text-right">{venue.price_per_seat}</td>
+                    <td className=" px-4 py-3 text-sm text-gray-600 hidden md:table-cell">{venue.phone_number || "Noma’lum"}</td>
+                    <td className=" px-4 py-3 text-sm">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         venue.status === 'tasdiqlangan' ? 'bg-green-100 text-green-700' :
                         venue.status === 'tasdiqlanmagan' ? 'bg-red-100 text-red-700' :
@@ -297,16 +297,23 @@ function GetAllVenues() {
                         {venue.status}
                       </span>
                     </td>
-                    <td className="border-b px-4 py-3 text-sm text-gray-600 hidden lg:table-cell">
+                    <td className=" px-4 py-3 text-sm text-gray-600 hidden lg:table-cell">
                       {venue.owner_firstname} {venue.owner_lastname}
                     </td>
-                    <td className="border-b px-4 py-3 text-center">
+                    <td className=" px-4 py-3 flex gap-3 flex-col text-center">
                       <button
                         onClick={() => handleDeleteVenue(venue.id)}
                         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 rounded text-xs shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
                         title="O'chirish"
                       >
                         O‘chirish
+                      </button>
+                      <button
+                        onClick={() => {navigate(`/admin/update/${venue.id}`)}}
+                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-1.5 px-3 rounded text-xs shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+                        title="O'chirish"
+                      >
+                        Edit
                       </button>
                     </td>
                   </tr>

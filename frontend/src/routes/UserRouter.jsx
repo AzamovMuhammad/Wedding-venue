@@ -4,6 +4,7 @@ import UserLayout from '../layout/userLayout'
 import VenuesCards from '../pages/owner/VenuesCard'
 import CreateVenue from '../pages/owner/CreateVenue'
 import VenueInfo from '../pages/owner/VenueInfo'
+import ViewBron from '../pages/owner/viewBron'
 
 function UserRouter() {
   return (
@@ -12,6 +13,7 @@ function UserRouter() {
             <Route index element={<VenuesCards/>}></Route>
             <Route path='create' element={<CreateVenue/>}></Route>
             <Route path='details/:id' element={<VenueInfo/>}></Route>
+            <Route path='viewBookings' element={<ViewBron/>}></Route>
         </Route>
     </Routes>
   )

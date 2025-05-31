@@ -170,7 +170,6 @@ exports.updateVenue = async (req, res) => {
       address,
       capacity,
       price_per_seat,
-      phone_number,
       status,
     } = req.body;
 
@@ -204,17 +203,15 @@ exports.updateVenue = async (req, res) => {
         address = COALESCE($3, address),
         capacity = COALESCE($4, capacity),
         price_per_seat = COALESCE($5, price_per_seat),
-        phone_number = COALESCE($6, phone_number),
-        status = COALESCE($7, status),
+        status = COALESCE($6, status),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $8 RETURNING *`,
+      WHERE id = $7 RETURNING *`,
       [
         name,
         district_id,
         address,
         capacity,
         price_per_seat,
-        phone_number,
         status,
         venueId,
       ]
