@@ -15,9 +15,6 @@ exports.addOwnVenue = async (req, res) => {
       owner_id: adminOwnerId, // Agar admin bu endpointni ishlatsa
     } = req.body; // <<=== FAYLLAR BU YERDA KUTILMAYDI, FAQAT JSON BODY
 
-    console.log("addOwnVenue (details only) - req.body:", req.body);
-    console.log("addOwnVenue (details only) - loggedInUser:", loggedInUser);
-
     if (!name || !district_id || !address || !capacity || !price_per_seat) {
       return res
         .status(400)

@@ -81,7 +81,7 @@ function VenuesCards() {
 
                 <button
                   onClick={() => {
-                    navigate(`/venueDetail/${venue.id}`);
+                    navigate(`/details/${venue.id}`);
                   }}
                   className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
                   To‘yxonani ko‘rish

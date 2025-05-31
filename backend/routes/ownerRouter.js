@@ -4,14 +4,20 @@ const router = express.Router();
 const { addOwnVenue } = require("../controllers/Owner/addOwnVenue"); // Kontroler importi
 const { authentication } = require("../middleware/authentication"); // Autentifikatsiya middleware
 const { checkRole } = require("../middleware/checkRole");       // Rol tekshirish middleware
+const { addOwnBrons } = require("../controllers/Users/addOwnBrons");
+const { getBron } = require("../controllers/Users/getOwnBrons");
+const { cancelBron } = require("../controllers/Users/cencelOwnBrons");
 
-// To'yxona matnli ma'lumotlarini yaratish uchun POST endpoint
-// MULTER (uploadFiles) BU YERDA ISHLATILMAYDI
-router.post(
-  "/addVenue", // Endpoint: POST /owner/addVenue (agar app.js da app.use('/owner', ownerRoutes) bo'lsa)
-  authentication,
-  checkRole("admin", "owner"), // Faqat admin yoki owner kira oladi
-  addOwnVenue                  // O'zgartirilgan kontroler
-);
+
+router.post("/addVenue",authentication, checkRole("admin", "owner"), addOwnVenue);
+
+// Bron yaratish (faqat foydalanuvchilar uchun)
+router.post("/bron", authentication, checkRole("user", "owner", "admin"), addOwnBrons);
+
+// Bronlarni ko'rish (admin uchun hamma, foydalanuvchi faqat o'z bronlari)
+router.get("/getBron", authentication, checkRole("user", "owner", "admin"), getBron);
+
+// Bronni bekor qilish
+router.patch("/:id/cancel", authentication, checkRole("user", "owner", "admin"), cancelBron);
 
 module.exports = router;
