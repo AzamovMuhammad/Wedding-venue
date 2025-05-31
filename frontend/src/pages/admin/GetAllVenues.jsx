@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
+import {useNavigate } from "react-router-dom";
 
 // Helper function for debounce (optional, but good for performance on search)
 function debounce(func, delay) {
@@ -29,6 +30,8 @@ function GetAllVenues() {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' }); // direction: 'ascending', 'descending', 'none'
 
   const token = localStorage.getItem("token");
+
+  const navigate = useNavigate()
 
   const uniqueDistricts = useMemo(() => {
     if (!allVenues.length) return [];
@@ -258,7 +261,7 @@ function GetAllVenues() {
               {displayedVenues.map((venue) => {
                 const firstImage = venue.images && venue.images.length > 0 ? venue.images[0] : null;
                 return (
-                  <tr key={venue.id} className="hover:bg-pink-50 transition-colors duration-150">
+                  <tr key={venue.id} onClick={() => navigate(`details/${venue.id}`)} className="hover:bg-pink-50 transition-colors duration-150">
                     <td className="border-b px-3 py-3 text-center">
                       {firstImage ? (
                         <>

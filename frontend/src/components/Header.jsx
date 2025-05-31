@@ -22,7 +22,7 @@ export default function Header() {
   const [userInfo, setUserInfo] = useState();
 
   const [navigation, setNavigation] = useState([
-    { name: "Dashboard", href: "#", current: true },
+    { name: "Dashboard", href: "/", current: false },
     { name: "Calendar", href: "#", current: false },
   ]);
 
@@ -50,7 +50,7 @@ export default function Header() {
           setNavigation((prev) => [
             ...prev,
             { name: "Team", href: "#", current: false },
-            { name: "Create Venue", href: "/createVanue", current: false },
+            { name: "Add Venue", href: "/create", current: false },
           ]);
         }
       })

@@ -7,6 +7,7 @@ import GetAllVenueOwners from "../pages/admin/GetAllVenueOwners";
 import GetBrons from "../pages/admin/GetBrons";
 import GetVenues from "../pages/admin/GetVenues";
 import ConfirmVenue from "../pages/admin/ConfirmVenue";
+import VenueDetails from "../pages/admin/VenueDetails";
 
 function AdminRoutes() {
   return (
@@ -18,6 +19,7 @@ function AdminRoutes() {
         <Route path="getBrons" element={<GetBrons />} />
         <Route path="getVenues" element={<GetVenues />} />
         <Route path="confirm" element={<ConfirmVenue />} />
+        <Route path="details/:id" element={<VenueDetails />} />
       </Route>
     </Routes>
   );
