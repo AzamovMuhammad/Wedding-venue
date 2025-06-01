@@ -147,8 +147,7 @@ exports.getPendingVenues = async (req, res) => {
        FROM venues v
        JOIN districts d ON v.district_id = d.id
        LEFT JOIN users u ON v.owner_id = u.id
-       WHERE v.status IN ('pending', 'tasdiqlanmagan')
-       ORDER BY v.created_at DESC`
+       WHERE v.status IN ('pending', 'tasdiqlanmagan')`
     );
 
     res.json({ venues: result.rows });
@@ -253,7 +252,6 @@ exports.getAllVenues = async (req, res) => {
         u.firstname AS owner_firstname,
         u.lastname AS owner_lastname,
         ARRAY_AGG(vi.image_url) FILTER (WHERE vi.image_url IS NOT NULL) AS images 
-        -- FILTER (WHERE vi.image_url IS NOT NULL) qo'shildi, bo'sh massivlar o'rniga null bo'lmagan rasmlarni yig'adi
     `;
     let fromClause = `
       FROM venues v

@@ -7,7 +7,7 @@ export default function Register() {
     lastname: "",
     username: "",
     password: "",
-    role: "user", // default role
+    role: "user", 
     phone_number: "",
   });
 

@@ -34,7 +34,7 @@ function BookingTable() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchBookings(); // Jadvalni yangilash
+      fetchBookings();
     } catch (err) {
       alert(err.response?.data?.message || "Bekor qilishda xatolik yuz berdi");
     }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import useVenueStore from "../../zustand/store"; // O'zingizning store import yo'lingizni tekshiring
 
 function CreateVenue() {
   const navigate = useNavigate();
@@ -21,12 +20,11 @@ function CreateVenue() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const token = localStorage.getItem("token");
-  // const setVenueId = useVenueStore((state) => state.setVenueId); // Agar kerak bo'lsa
 
   useEffect(() => {
     async function fetchDistricts() {
       try {
-        const res = await axios.get("http://localhost:4001/districts", { // Portingizni tekshiring
+        const res = await axios.get("http://localhost:4001/districts", { 
             headers: { Authorization: `Bearer ${token}` }
         });
         setDistricts(res.data.districts);
@@ -35,7 +33,7 @@ function CreateVenue() {
         setError("Tumanlarni yuklashda xatolik yuz berdi.");
       }
     }
-    if (token) { // Token mavjud bo'lsagina districts so'rovini yuborish
+    if (token) {
         fetchDistricts();
     }
   }, [token]);
@@ -96,7 +94,6 @@ function CreateVenue() {
     setError("");
     setIsSubmitting(true);
 
-    // 1-QADAM: To'yxona matnli ma'lumotlarini yuborish
     try {
       const venueDetailsPayload = {
         name: formData.name,
@@ -109,9 +106,8 @@ function CreateVenue() {
       console.log("Sending venue details:", venueDetailsPayload);
 
       const venueDetailsResponse = await axios.post(
-        // Backenddagi `ownerRoutes` ga mos endpoint
-        "http://localhost:4001/users/addVenue", // PORTINGIZNI VA YO'LINGIZNI TEKSHIRING
-        venueDetailsPayload, // JSON obyekt
+        "http://localhost:4001/users/addVenue", 
+        venueDetailsPayload, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,11 +118,9 @@ function CreateVenue() {
 
       const newVenue = venueDetailsResponse.data.venue;
       const venueID = newVenue.id;
-      // setVenueId(venueID); // Agar kerak bo'lsa
       setMessage(venueDetailsResponse.data.message || "To’yxona ma'lumotlari saqlandi.");
       console.log("Venue details saved, ID:", venueID);
 
-      // 2-QADAM: Rasmlarni yuborish (agar tanlangan bo'lsa)
       if (selectedImages.length > 0 && venueID) {
         const imagesFormData = new FormData();
         selectedImages.forEach((imageObj) => {
@@ -136,8 +130,7 @@ function CreateVenue() {
         console.log(`Uploading ${selectedImages.length} images for venue ID: ${venueID}`);
 
         await axios.post(
-          // Backenddagi `venueImageRoutes` ga mos endpoint
-          `http://localhost:4001/venues/${venueID}/images`, // PORTINGIZNI TEKSHIRING
+          `http://localhost:4001/venues/${venueID}/images`, 
           imagesFormData,
           {
             headers: {
@@ -147,8 +140,6 @@ function CreateVenue() {
         );
         setMessage("To’yxona va rasmlar muvaffaqiyatli qo‘shildi!");
         console.log("Images uploaded successfully.");
-
-        // Formani tozalash
         setFormData({
           name: "", district_id: "", address: "", capacity: "",
           price_per_seat: "",
@@ -179,7 +170,7 @@ function CreateVenue() {
   };
 
   return (
-    <div className="pt-18"> {/* Tailwind klassi */}
+    <div className="pt-18">
       <div className="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-8">
         <h2 className="text-2xl font-bold text-center text-pink-700 mb-6">
           Yangi To’yxona Qo‘shish

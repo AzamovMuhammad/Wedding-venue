@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 function VenueDetails() {
-  const { id } = useParams(); // URL parametridan venue id olish
+  const { id } = useParams(); 
   const [venue, setVenue] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);

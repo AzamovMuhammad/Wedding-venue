@@ -12,14 +12,14 @@ function VenuesCards() {
   useEffect(() => {
     async function fetchVenues() {
       try {
-        const token = localStorage.getItem("token"); // Tokenni localStorage dan olish
+        const token = localStorage.getItem("token");
         const res = await axios.get("http://localhost:4001/venue/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setVenues(res.data.venues); // Venuesni state ga saqlash
+        setVenues(res.data.venues);
         setLoading(false);
       } catch (err) {
         setError("To‘yxonalar ma’lumotlarini olishda xatolik yuz berdi.");

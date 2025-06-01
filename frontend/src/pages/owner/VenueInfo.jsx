@@ -14,9 +14,9 @@ function VenueInfo() {
   const [guestCount, setGuestCount] = useState("");
   const [bookingMessage, setBookingMessage] = useState("");
   const [bookingError, setBookingError] = useState("");
-  const [isBooking, setIsBooking] = useState(false); // Bron qilish jarayonini kuzatish
+  const [isBooking, setIsBooking] = useState(false);
 
-  const navigate = useNavigate(); // Yo'naltirish uchun
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchVenue() {
@@ -27,7 +27,7 @@ function VenueInfo() {
       }
       try {
         const res = await axios.get(`http://localhost:4001/venue/${id}`, {
-          // Port va yo'lni tekshiring
+
           headers: { Authorization: `Bearer ${token}` },
         });
         setVenue(res.data.venue);
@@ -43,8 +43,6 @@ function VenueInfo() {
 
     fetchVenue();
   }, [id, token]);
-
-  // Bron qilish uchun handleSubmit funksiyasi
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
     setBookingMessage("");
@@ -59,14 +57,13 @@ function VenueInfo() {
 
     try {
       const bookingPayload = {
-        venue_id: parseInt(id), // Joriy to'yxona IDsi
+        venue_id: parseInt(id), 
         reservation_date: reservationDate,
         guest_count: parseInt(guestCount),
       };
 
-      // Backendga bron qilish so'rovini yuborish (endpointni to'g'rilang)
       const res = await axios.post(
-        "http://localhost:4001/users/bron", // YOKI SIZNING BRON QILISH ENDPOINTINGIZ
+        "http://localhost:4001/users/bron",
         bookingPayload,
         {
           headers: {
@@ -77,11 +74,9 @@ function VenueInfo() {
       );
       setBookingMessage("To'yxona muvaffaqiyatli bron qilindi!");
       console.log("Bron natijasi:", res.data.booking);
-      // Inputlarni tozalash
       setReservationDate("");
       setGuestCount("");
-      // Foydalanuvchini "Mening bronlarim" sahifasiga yo'naltirish (agar mavjud bo'lsa)
-      // navigate('/my-bookings');
+
     } catch (err) {
       console.error("Bron qilishda xatolik:", err);
       setBookingError(

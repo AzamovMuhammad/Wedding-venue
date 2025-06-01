@@ -144,17 +144,16 @@ function AddNewVenue() {
         });
 
         console.log(`Rasmlar ${venueId} IDli to'yxonaga yuborilmoqda...`);
-        const imageUploadRes = await axios.post( // Javobni oling
+        const imageUploadRes = await axios.post( 
           `http://localhost:4001/venue/${venueId}/images`,
           formDataImg,
-          { // AXIOS SO'ROVIGA HEADERS QO'SHILDI
+          {
             headers: {
               Authorization: `Bearer ${token}`,
-              // "Content-Type": "multipart/form-data" - FormData uchun avtomatik qo'yiladi odatda
             },
           }
         );
-        console.log("Rasm yuklash javobi:", imageUploadRes.data); // Server javobini log qiling
+        console.log("Rasm yuklash javobi:", imageUploadRes.data); 
       } else {
         console.log("Yuklash uchun rasm tanlanmagan.");
       }
@@ -169,7 +168,6 @@ function AddNewVenue() {
         price_per_seat: "",
       });
 
-      // Tanlangan rasmlarni tozalash va URL'larni bo'shatish
       selectedImages.forEach((imageObj) =>
         URL.revokeObjectURL(imageObj.previewUrl)
       );

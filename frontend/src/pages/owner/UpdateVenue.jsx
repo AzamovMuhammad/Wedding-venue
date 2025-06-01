@@ -73,7 +73,7 @@ function UpdateVenues() {
           district_id: parseInt(formData.district_id),
           capacity: parseInt(formData.capacity),
           price_per_seat: parseFloat(formData.price_per_seat),
-          status: formData.status, // faqat admin uchun kerak bo‘lsa o‘zgartirish mumkin
+          status: formData.status, 
         },
         {
           headers: { Authorization: `Bearer ${token}` },

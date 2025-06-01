@@ -6,7 +6,6 @@ exports.getAllBookingsDates = async (req, res) => {
       SELECT reservation_date
       FROM bookings
       WHERE status != 'bekor qilingan'
-      ORDER BY reservation_date
     `;
 
     const result = await pool.query(query);

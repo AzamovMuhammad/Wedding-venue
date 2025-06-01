@@ -9,8 +9,7 @@ exports.getBron = async (req, res) => {
         `SELECT b.*, v.name as venue_name, u.firstname, u.lastname, u.phone_number
          FROM bookings b
          JOIN venues v ON b.venue_id = v.id
-         JOIN users u ON b.user_id = u.id
-         ORDER BY b.reservation_date DESC`
+         JOIN users u ON b.user_id = u.id`
       );
     } else if (user.role === "owner") {
       result = await pool.query(
@@ -18,8 +17,7 @@ exports.getBron = async (req, res) => {
          FROM bookings b
          JOIN venues v ON b.venue_id = v.id
          JOIN users u ON b.user_id = u.id
-         WHERE v.owner_id = $1
-         ORDER BY b.reservation_date DESC`,
+         WHERE v.owner_id = $1`,
         [user.id]
       );
     } else {
@@ -27,8 +25,7 @@ exports.getBron = async (req, res) => {
         `SELECT b.*, v.name as venue_name
          FROM bookings b
          JOIN venues v ON b.venue_id = v.id
-         WHERE b.user_id = $1
-         ORDER BY b.reservation_date DESC`,
+         WHERE b.user_id = $1`,
         [user.id]
       );
     }

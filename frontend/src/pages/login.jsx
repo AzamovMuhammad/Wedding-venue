@@ -10,10 +10,8 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Tokenni va user rolini saqlash uchun
   const [token, setToken] = useState(localStorage.getItem("token"));
 
-  // Token o‘zgarganda user ma’lumotlarini olish va yo‘naltirish
   useEffect(() => {
     if (!token) return;
 
@@ -46,7 +44,7 @@ export default function Login() {
       });
       alert("Login successful!");
       localStorage.setItem("token", response.data.token);
-      setToken(response.data.token); // useEffect ishga tushishi uchun
+      setToken(response.data.token);
     } catch (error) {
       if (error.response) {
         alert(error.response.data.message);

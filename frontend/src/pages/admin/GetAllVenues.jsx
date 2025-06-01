@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import {useNavigate } from "react-router-dom";
 
-// Helper function for debounce (optional, but good for performance on search)
 function debounce(func, delay) {
   let timeout;
   return function executedFunction(...args) {
@@ -16,18 +15,17 @@ function debounce(func, delay) {
 }
 
 function GetAllVenues() {
-  const [allVenues, setAllVenues] = useState([]); // Original list from API
-  const [displayedVenues, setDisplayedVenues] = useState([]); // List to render after filters/sort
+  const [allVenues, setAllVenues] = useState([]); 
+  const [displayedVenues, setDisplayedVenues] = useState([]); 
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionMessage, setActionMessage] = useState("");
 
-  // --- State for Filters, Sort, Search ---
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDistrict, setFilterDistrict] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' }); // direction: 'ascending', 'descending', 'none'
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' }); 
 
   const token = localStorage.getItem("token");
 
@@ -57,7 +55,7 @@ function GetAllVenues() {
       setAllVenues(res.data.venues || []);
     } catch (err) {
       setError(err.response?.data?.message || "To'yxonalarni yuklashda xatolik yuz berdi");
-      setAllVenues([]); // Ensure allVenues is an empty array on error
+      setAllVenues([]); 
     } finally {
       setLoading(false);
     }
@@ -67,7 +65,6 @@ function GetAllVenues() {
     fetchVenues();
   }, [fetchVenues]);
 
-  // --- Processing Logic for Filters, Sort, Search ---
   useEffect(() => {
     let processed = [...allVenues];
 
@@ -101,13 +98,12 @@ function GetAllVenues() {
         let valB = b[sortConfig.key];
 
         if (sortConfig.key === 'price_per_seat' || sortConfig.key === 'capacity') {
-          valA = parseFloat(valA) || 0; // Default to 0 if parsing fails
+          valA = parseFloat(valA) || 0; 
           valB = parseFloat(valB) || 0;
         } else if (typeof valA === 'string' && typeof valB === 'string') {
           valA = valA.toLowerCase();
           valB = valB.toLowerCase();
         }
-        // For other types, direct comparison
 
         if (valA < valB) return sortConfig.direction === 'ascending' ? -1 : 1;
         if (valA > valB) return sortConfig.direction === 'ascending' ? 1 : -1;
@@ -127,7 +123,7 @@ function GetAllVenues() {
       const res = await axios.delete(`http://localhost:4001/venue/${venueId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAllVenues(prev => prev.filter(v => v.id !== venueId)); // Update original list
+      setAllVenues(prev => prev.filter(v => v.id !== venueId)); 
       setActionMessage(res.data.message || "To’yxona muvaffaqiyatli o‘chirildi");
     } catch (err) {
       setError(err.response?.data?.message || "O‘chirishda xatolik yuz berdi");
@@ -139,9 +135,8 @@ function GetAllVenues() {
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
       direction = 'descending';
     } else if (sortConfig.key === key && sortConfig.direction === 'descending') {
-      direction = 'none'; // Third click resets sort for this key
+      direction = 'none';
     }
-    // If it's a new key or direction is 'none', set to ascending
     setSortConfig({ key, direction });
   };
 
@@ -162,7 +157,6 @@ function GetAllVenues() {
     <div className="max-w-full mx-auto p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Barcha To’yxonalar</h1>
 
-      {/* --- Filter and Search Controls --- */}
       <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg shadow">
         <div>
           <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Qidiruv</label>
@@ -171,7 +165,7 @@ function GetAllVenues() {
             id="search"
             placeholder="Nomi, manzili bo'yicha..."
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-            onChange={(e) => debouncedSearch(e.target.value)} // Using debounced search
+            onChange={(e) => debouncedSearch(e.target.value)}
           />
         </div>
         <div>
@@ -208,7 +202,6 @@ function GetAllVenues() {
                     setFilterDistrict("");
                     setFilterStatus("");
                     setSortConfig({ key: null, direction: 'none' });
-                    // Manually clear input field if not controlled directly by searchTerm for debounced version
                     const searchInput = document.getElementById('search');
                     if (searchInput) searchInput.value = "";
                 }}
@@ -219,11 +212,9 @@ function GetAllVenues() {
         </div>
       </div>
       
-      {/* --- Action Messages & Errors --- */}
       {error && <p className="text-red-500 bg-red-100 p-3 rounded-md mb-4">{error}</p>}
       {actionMessage && <p className="text-green-600 bg-green-100 p-3 rounded-md mb-4">{actionMessage}</p>}
 
-      {/* --- Venues Table --- */}
       {displayedVenues.length === 0 && !loading && !error && (
         <p className="text-center text-gray-500 mt-10">
             {searchTerm || filterDistrict || filterStatus ? "Filterlarga mos to'yxona topilmadi." : "Hech qanday to’yxona topilmadi."}

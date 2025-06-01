@@ -17,11 +17,9 @@ function BookingCalendar() {
           }
         );
 
-        console.log("API Javobi Ma'lumotlari:", res.data); // Buni tekshirish uchun qoldiramiz
+        console.log("API Javobi Ma'lumotlari:", res.data); 
 
-        // Tekshiramiz: res.data mavjudmi va res.data.bookedDates massivmi?
         if (res.data && Array.isArray(res.data.bookedDates)) {
-          // Har bir sana matnini Date obyektiga o'tkazamiz
           const dates = res.data.bookedDates.map(
             (dateString) => new Date(dateString)
           );
@@ -51,7 +49,7 @@ function BookingCalendar() {
       const found = bookedDates.find(
         (bookedDate) => bookedDate.toDateString() === date.toDateString()
       );
-      if (found) return "bg-red-400 text-white rounded"; // Stilni moslashtiring
+      if (found) return "bg-red-400 text-white rounded"; 
     }
     return null;
   };
