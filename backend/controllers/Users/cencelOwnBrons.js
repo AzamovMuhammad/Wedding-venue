@@ -3,10 +3,9 @@ const pool = require("../../config/db");
 
 exports.cancelBron = async (req, res) => {
   try {
-    const user = req.user; // Hozirgi foydalanuvchi
+    const user = req.user; 
     const bookingId = req.params.id;
 
-    // Bron va unga tegishli venue (to’yxona) egasi ma'lumotlarini olish
     const bookingResult = await pool.query(
       `SELECT b.*, v.owner_id
        FROM bookings b
@@ -21,7 +20,6 @@ exports.cancelBron = async (req, res) => {
 
     const booking = bookingResult.rows[0];
 
-    // Foydalanuvchi bronni bekor qilishga haqli ekanligini tekshirish
     if (
       user.role !== "admin" &&
       booking.user_id !== user.id &&
@@ -30,7 +28,6 @@ exports.cancelBron = async (req, res) => {
       return res.status(403).json({ message: "Siz ushbu bronni bekor qila olmaysiz" });
     }
 
-    // Bron statusini 'bekor qilingan' deb yangilash
     const cancelResult = await pool.query(
       "UPDATE bookings SET status = 'bekor qilingan' WHERE id = $1 RETURNING *",
       [bookingId]

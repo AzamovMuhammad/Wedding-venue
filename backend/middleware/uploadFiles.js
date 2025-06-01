@@ -12,6 +12,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const uploadFiles = upload.array("images", 5); // 'images' frontenddagi input nomi
+const uploadFiles = upload.array("images", 5);
 
-module.exports = uploadFiles; // to‘g‘ridan-to‘g‘ri middleware sifatida eksport
+module.exports = uploadFiles; 

@@ -1,11 +1,17 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate()
 
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const hanndleLogOut = () => {
+    localStorage.removeItem('token')
+    navigate('/')
+  } 
 
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
@@ -83,6 +89,7 @@ function AdminSidebar() {
             </Link>
           ))}
         </nav>
+        <h1 onClick={hanndleLogOut} className="cursor-pointer flex flex-col p-4">log out</h1>
         <div className="p-4 border-t border-pink-600 text-sm">
           © 2025 Your Company
         </div>

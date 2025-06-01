@@ -11,7 +11,7 @@ router.post(
   "/:venueId/images",
   authentication,
   checkRole("admin", "owner"),
-  uploadFiles,  // to‘g‘ridan-to‘g‘ri middleware sifatida
+  uploadFiles,  
   uploadVenueImages
 );
 

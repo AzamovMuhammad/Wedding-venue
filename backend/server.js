@@ -15,7 +15,6 @@ const bookingRouter = require("./routes/bookingRouter");
 app.use(cors());
 app.use(express.json());
 
-// login va registratsiya qilish uchun
 app.use("/auth", authRoutes);
 app.use("/profile", profileRouter);
 
@@ -26,10 +25,7 @@ app.use('/booking', bookingRouter)
 
 app.use("/admin", adminRoutes);
 app.use("/users", ownerRoutes);
-// app.use("/owner", ownerRoutes);
-// app.use("/user", userRoutes);
 
-// Statik fayllarni server qilish (suratlarni ko‘rish uchun)
 app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 4001;

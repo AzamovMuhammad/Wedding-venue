@@ -5,7 +5,6 @@ exports.getBron = async (req, res) => {
     let result;
 
     if (user.role === "admin") {
-      // Admin — hamma bronlar
       result = await pool.query(
         `SELECT b.*, v.name as venue_name, u.firstname, u.lastname, u.phone_number
          FROM bookings b
@@ -14,7 +13,6 @@ exports.getBron = async (req, res) => {
          ORDER BY b.reservation_date DESC`
       );
     } else if (user.role === "owner") {
-      // Owner — faqat o'z to'yxonalaridagi bronlar
       result = await pool.query(
         `SELECT b.*, v.name as venue_name, u.firstname, u.lastname, u.phone_number
          FROM bookings b
@@ -25,7 +23,6 @@ exports.getBron = async (req, res) => {
         [user.id]
       );
     } else {
-      // Oddiy foydalanuvchi — faqat o'z bronlari
       result = await pool.query(
         `SELECT b.*, v.name as venue_name
          FROM bookings b

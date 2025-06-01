@@ -3,16 +3,13 @@ require('dotenv').config();
 
 exports.authentication = (req, res, next) => {
   try {
-    // Header dan tokenni olish (Bearer token shaklida)
     const token = req.header('Authorization')?.split(" ")[1];
     if (!token) {
       return res.status(403).json({ message: "Token berilmadi" });
     }
 
-    // Tokenni tekshirish va payloadni olish
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    
-    // Payloadni req.user ga o'rnatish
+
     req.user = decoded;
 
     next();

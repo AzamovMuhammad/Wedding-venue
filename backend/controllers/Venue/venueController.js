@@ -181,7 +181,6 @@ exports.updateVenue = async (req, res) => {
 
     const venue = venueResult.rows[0];
 
-    // Owner faqat o‘zining to’yxonasi uchun o‘zgartirish kiritishi mumkin
     if (user.role === "owner" && venue.owner_id !== user.id) {
       return res
         .status(403)
@@ -247,7 +246,6 @@ exports.getAllVenues = async (req, res) => {
     const user = req.user;
     const { status, sortBy, sortOrder, district_id } = req.query;
 
-    // Asosiy so'rov qismlari
     let selectClause = `
       SELECT
         v.*,

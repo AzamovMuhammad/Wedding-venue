@@ -41,17 +41,13 @@ router.get("/:id", authentication, getVenueById);
 // Venue lar ro‘yxatini olish, filterlash, tartiblash (hamma uchun)
 router.get("/", authentication, getAllVenues);
 
-
-
-
-// **** YANGI MARSHRUT: To'yxona uchun rasmlarni yuklash ****
 router.post(
-  "/:venueId/images", // Frontend ishlatayotgan yo'l
+  "/:venueId/images", 
   authentication,
-  checkRole("admin", "owner"), // Admin yoki to'yxona egasi rasm yuklashi mumkin
-  uploadFilesMiddleware,       // Multer middleware fayllarni qayta ishlaydi
-  uploadVenueImages            // Controller funksiyasi rasmlarni bazaga saqlaydi
+  checkRole("admin", "owner"), 
+  uploadFilesMiddleware,       
+  uploadVenueImages            
 );
-// **********************************************************
+
 
 module.exports = router;

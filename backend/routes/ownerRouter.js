@@ -1,9 +1,8 @@
-// routes/ownerRoutes.js (yoki sizning faylingiz nomi)
 const express = require("express");
 const router = express.Router();
-const { addOwnVenue } = require("../controllers/Owner/addOwnVenue"); // Kontroler importi
-const { authentication } = require("../middleware/authentication"); // Autentifikatsiya middleware
-const { checkRole } = require("../middleware/checkRole");       // Rol tekshirish middleware
+const { addOwnVenue } = require("../controllers/Owner/addOwnVenue");
+const { authentication } = require("../middleware/authentication"); 
+const { checkRole } = require("../middleware/checkRole");  
 const { addOwnBrons } = require("../controllers/Users/addOwnBrons");
 const { getBron } = require("../controllers/Users/getOwnBrons");
 const { cancelBron } = require("../controllers/Users/cencelOwnBrons");

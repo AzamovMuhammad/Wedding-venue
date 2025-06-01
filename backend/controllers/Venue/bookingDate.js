@@ -2,7 +2,6 @@ const pool = require("../../config/db");
 
 exports.getAllBookingsDates = async (req, res) => {
   try {
-    // Barcha foydalanuvchilar barcha bronlangan sanalarni ko‘rishi mumkin
     const query = `
       SELECT reservation_date
       FROM bookings

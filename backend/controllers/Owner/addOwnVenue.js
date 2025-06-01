@@ -3,17 +3,16 @@ const pool = require("../../config/db");
 
 exports.addOwnVenue = async (req, res) => {
   try {
-    const loggedInUser = req.user; // authentication middleware'dan
+    const loggedInUser = req.user;
     const {
       name,
       district_id,
       address,
       capacity,
       price_per_seat,
-      // Admin yuborishi mumkin bo'lgan qo'shimcha maydonlar:
-      status,    // Agar admin bu endpointni ishlatsa
-      owner_id: adminOwnerId, // Agar admin bu endpointni ishlatsa
-    } = req.body; // <<=== FAYLLAR BU YERDA KUTILMAYDI, FAQAT JSON BODY
+      status,   
+      owner_id: adminOwnerId, 
+    } = req.body;
 
     if (!name || !district_id || !address || !capacity || !price_per_seat) {
       return res
@@ -24,13 +23,12 @@ exports.addOwnVenue = async (req, res) => {
     let finalOwnerId;
     let finalVenueStatus;
 
-    // Rolga qarab owner_id va statusni belgilash
     if (loggedInUser.role === "admin") {
-      finalOwnerId = adminOwnerId || loggedInUser.id; // Admin o'zi uchun ham qo'shishi yoki boshqa owner tanlashi mumkin
-      finalVenueStatus = status || "tasdiqlangan"; // Admin qo'shsa, statusni ham belgilashi mumkin
+      finalOwnerId = adminOwnerId || loggedInUser.id;
+      finalVenueStatus = status || "tasdiqlangan";
     } else if (loggedInUser.role === "owner") {
       finalOwnerId = loggedInUser.id;
-      finalVenueStatus = "tasdiqlanmagan"; // Owner qo'shgan venue odatda tasdiqlashni kutadi
+      finalVenueStatus = "tasdiqlanmagan";
     } else {
       return res
         .status(403)
@@ -42,14 +40,14 @@ exports.addOwnVenue = async (req, res) => {
         (name, district_id, address, capacity, price_per_seat, status, owner_id)
       VALUES
         ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *`; // Yoki faqat kerakli maydonlarni, masalan: id, name, status
+      RETURNING *`; 
 
     const values = [
       name,
-      parseInt(district_id), // Stringni integerga o'tkazish
+      parseInt(district_id), 
       address,
-      parseInt(capacity),    // Stringni integerga o'tkazish
-      parseFloat(price_per_seat), // Stringni floatga o'tkazish
+      parseInt(capacity), 
+      parseFloat(price_per_seat), 
       finalVenueStatus,
       finalOwnerId,
     ];
@@ -69,7 +67,7 @@ exports.addOwnVenue = async (req, res) => {
 
   } catch (error) {
     console.error("ADD OWN VENUE (details only) error:", error);
-    if (error.code === '23503') { // Foreign key violation
+    if (error.code === '23503') {
       if (error.constraint && error.constraint.includes("district_id")) {
         return res.status(400).json({ message: "Ko'rsatilgan tuman (district_id) mavjud emas." });
       } else if (error.constraint && error.constraint.includes("owner_id")) {

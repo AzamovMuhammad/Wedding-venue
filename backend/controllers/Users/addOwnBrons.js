@@ -4,20 +4,17 @@ const pool = require("../../config/db");
 
 exports.addOwnBrons = async (req, res) => {
   try {
-    const user = req.user;  // JWT orqali aniqlangan foydalanuvchi
+    const user = req.user; 
     const { venue_id, reservation_date, guest_count } = req.body;
 
     if (!venue_id || !reservation_date || !guest_count) {
       return res.status(400).json({ message: "Kerakli maydonlar to‘ldirilmagan" });
     }
 
-    // To’yxona mavjudligini tekshirish
     const venueCheck = await pool.query("SELECT * FROM venues WHERE id = $1", [venue_id]);
     if (venueCheck.rows.length === 0) {
       return res.status(404).json({ message: "To’yxona topilmadi" });
     }
-
-    // Bron sanasi tekshiruvi va boshqa biznes qoidalar qo‘yilishi mumkin
 
     const result = await pool.query(
       `INSERT INTO bookings (venue_id, user_id, reservation_date, guest_count, status)
