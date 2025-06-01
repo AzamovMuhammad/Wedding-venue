@@ -5,6 +5,7 @@ import VenuesCards from '../pages/owner/VenuesCard'
 import CreateVenue from '../pages/owner/CreateVenue'
 import VenueInfo from '../pages/owner/VenueInfo'
 import ViewBron from '../pages/owner/viewBron'
+import UpdateVenues from '../pages/owner/UpdateVenue'
 
 function UserRouter() {
   return (
@@ -14,6 +15,7 @@ function UserRouter() {
             <Route path='create' element={<CreateVenue/>}></Route>
             <Route path='details/:id' element={<VenueInfo/>}></Route>
             <Route path='viewBookings' element={<ViewBron/>}></Route>
+            <Route path='update/:id' element={<UpdateVenues/>}></Route>
         </Route>
     </Routes>
   )

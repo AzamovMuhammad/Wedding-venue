@@ -86,6 +86,13 @@ function VenuesCards() {
                   className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
                   To‘yxonani ko‘rish
                 </button>
+                <button
+                  onClick={() => {
+                    navigate(`/update/${venue.id}`);
+                  }}
+                  className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                  Edit to'yxona
+                </button>
               </div>
             ))
           ) : (

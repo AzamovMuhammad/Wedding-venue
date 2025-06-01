@@ -174,11 +174,11 @@ exports.updateVenue = async (req, res) => {
     } = req.body;
 
     // Faqat admin statusni o‘zgartirishi mumkin
-    if (status && user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Faqat admin statusni o‘zgartirishi mumkin" });
-    }
+    // if (status && user.role !== "admin") {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "Faqat admin statusni o‘zgartirishi mumkin" });
+    // }
 
     const venueResult = await pool.query("SELECT * FROM venues WHERE id = $1", [
       venueId,
