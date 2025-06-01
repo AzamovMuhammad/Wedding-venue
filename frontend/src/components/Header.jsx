@@ -23,7 +23,7 @@ export default function Header() {
 
   const [navigation, setNavigation] = useState([
     { name: "Dashboard", href: "/", current: false },
-    { name: "Calendar", href: "#", current: false },
+    { name: "Calendar", href: "/bookingDate", current: false },
   ]);
 
   const handleLogin = () => {

@@ -1,1 +1,18 @@
 @import "tailwindcss";
+/* react-calendar uchun maxsus uslublar */
+.react-calendar {
+    @apply border-none rounded-lg shadow-md; /* Masalan, Tailwind klasslari */
+  }
+  .react-calendar__tile {
+    @apply p-2 rounded-md;
+  }
+  .react-calendar__tile--active {
+    @apply bg-blue-500 text-white;
+  }
+  .react-calendar__navigation button {
+    @apply text-blue-600 font-semibold hover:bg-blue-100;
+  }
+  /* Sizning qizil fonli band qilingan kunlar uchun uslubingiz */
+  .react-calendar__tile.bg-red-400 { /* tileClassName orqali berilgan klass */
+    @apply !bg-red-500 text-white rounded-md; /* ! - Tailwind ustuvorligini oshirish uchun */
+  }

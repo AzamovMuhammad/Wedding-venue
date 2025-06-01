@@ -62,7 +62,6 @@ exports.createVenue = async (req, res) => {
     res.status(500).json({ message: "Server xatosi" });
   }
 };
-
 // ASSIGN OWNER (faqat admin)
 exports.assignOwner = async (req, res) => {
   try {
@@ -172,13 +171,6 @@ exports.updateVenue = async (req, res) => {
       price_per_seat,
       status,
     } = req.body;
-
-    // Faqat admin statusni o‘zgartirishi mumkin
-    // if (status && user.role !== "admin") {
-    //   return res
-    //     .status(403)
-    //     .json({ message: "Faqat admin statusni o‘zgartirishi mumkin" });
-    // }
 
     const venueResult = await pool.query("SELECT * FROM venues WHERE id = $1", [
       venueId,

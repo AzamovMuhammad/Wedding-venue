@@ -9,14 +9,14 @@ const {
   deleteVenue,
   getAllVenues,
   getVenueById,
-  getPendingVenues, // <--- uploadVenueImages controllerini import qiling
-} = require("../controllers/Venue/venueController"); // Controller faylingizga to'g'ri yo'lni ko'rsating
+  getPendingVenues,
+} = require("../controllers/Venue/venueController");
 
 const {uploadVenueImages} = require("../controllers/Venue/venueImageController")
 
-const uploadFilesMiddleware = require('../middleware/uploadFiles'); // <--- Multer middleware'ini import qiling (to'g'ri yo'lni ko'rsating)
-const { authentication } = require("../middleware/authentication"); // To'g'ri yo'lni ko'rsating
-const { checkRole } = require("../middleware/checkRole"); // To'g'ri yo'lni ko'rsating
+const uploadFilesMiddleware = require('../middleware/uploadFiles');
+const { authentication } = require("../middleware/authentication");
+const { checkRole } = require("../middleware/checkRole");
 
 // Yangi venue qo‘shish (admin va owner)
 router.post("/", authentication, checkRole("admin", "owner"), createVenue);
@@ -40,6 +40,8 @@ router.get("/:id", authentication, getVenueById);
 
 // Venue lar ro‘yxatini olish, filterlash, tartiblash (hamma uchun)
 router.get("/", authentication, getAllVenues);
+
+
 
 
 // **** YANGI MARSHRUT: To'yxona uchun rasmlarni yuklash ****
