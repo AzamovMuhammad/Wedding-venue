@@ -15,10 +15,10 @@ function AdminSidebar() {
 
   const menuItems = [
     { name: "Dashboard", path: "/admin" },
-    { name: "addVenue", path: "/admin/addVenue" },
-    { name: "getVenueOwners", path: "/admin/getVenueOwners" },
-    { name: "getBrons", path: "/admin/getBrons" },
-    { name: "confirm", path: "/admin/confirm" },
+    { name: "Venue", path: "/admin/addVenue" },
+    { name: "Venue Owners", path: "/admin/getVenueOwners" },
+    { name: "Brons", path: "/admin/getBrons" },
+    { name: "Confirm", path: "/admin/confirm" },
   ];
 
   return (
